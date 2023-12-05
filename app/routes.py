@@ -9,8 +9,10 @@ from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, \
 from app.email import send_password_reset_email
 from datetime import datetime
 from app.twilio_verify_api import request_verification_token, \
-    check_verification_token, sms, check_verification_code, request_verification_code, CODE
+    check_verification_token, sms, check_verification_code, request_verification_code, code
 from flask_wtf.csrf import CSRFProtect
+
+T = None
 
 
 csrf = CSRFProtect(app)
@@ -41,6 +43,7 @@ def login():
             session['username'] = user.username
             session['phone'] = user.verification_phone
             sms(session['phone'])
+            flash("Code de verification envoyé par SMS", "success")
             return redirect(url_for(
                 'verify_2fa',
                 next=next_page,
@@ -179,6 +182,7 @@ def enable_2fa():
         session['phone'] = form.verification_phone.data
         #request_verification_token(session['phone'])
         sms(session['phone'])
+        flash("Code d'activation envoyé par SMS", "success")
         return redirect(url_for('verify_2fa'))
     return render_template('enable_2fa.html',
                            title="Activer LITA : Ecole d'été 2023",
@@ -191,7 +195,8 @@ def verify_2fa():
     form = Confirm2faForm()
     if form.validate_on_submit():
         phone = session['phone']
-        if check_verification_code(form.token.data):
+        T = code()
+        if check_verification_code(T, form.token.data):
             del session['phone']
             if current_user.is_authenticated:
                 current_user.verification_phone = phone

@@ -1,8 +1,11 @@
+from flask import flash
 from twilio.rest import Client, TwilioException
 from app import app
 import requests, random
 
 CODE = None
+
+
 def _get_twilio_verify_client():
     return Client(
         app.config['TWILIO_ACCOUNT_SID'],
@@ -43,19 +46,23 @@ def sms(num):
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + access_token  # Add a space after 'Bearer'
     }
-    CODE = random.randint(1000, 9999)
+    global CODE
+    CODE = str(random.randint(1000, 9999))
     data = {
         "outboundSMSMessageRequest": {
             "address": "tel:" + num,
             "senderAddress": "tel:+221772262747",
             "outboundSMSTextMessage": {
-                "message": "Merci de recevoir, votre code de verification dans le compte LITA : Ecole d'été 2023 est :"+str(CODE)
+                "message": "Merci de recevoir, votre code de verification dans le compte LITA : Ecole d'été 2023 est :" + CODE
             }
         }
     }
 
     response = requests.post(url, json=data, headers=headers)
 
+def code():
+
+    return CODE
 
 def request_verification_token(phone):
     verify = _get_twilio_verify_client()
@@ -64,13 +71,17 @@ def request_verification_token(phone):
     except TwilioException:
         verify.verifications.create(to=phone, channel='call')
 
-def request_verification_code(token):
+
+def request_verification_code(cd, token):
     try:
-        if CODE == token:
-            return True
+        if token == cd:
+            flash('Verification reussie', 'success')
+        else:
+            flash('Code de verification Invalide''danger')
     except TwilioException:
         return False
     return 'approved'
+
 
 def check_verification_token(phone, token):
     verify = _get_twilio_verify_client()
@@ -80,11 +91,18 @@ def check_verification_token(phone, token):
         return False
     return result.status == 'approved'
 
-def check_verification_code(token):
-    #verify = _get_twilio_verify_client()
+
+from flask import flash
+
+
+def check_verification_code(cd, toke):
     try:
-        if str(CODE) == token:
+        if str(toke) == str(cd):
+            flash('Verification réussie', 'success')
             return True
-    except TwilioException:
+        else:
+            flash('Code de vérification invalide', 'danger')
+            return False
+    except Exception as e:
+        print(f"Error: {e}")
         return False
-    return 'approved'
