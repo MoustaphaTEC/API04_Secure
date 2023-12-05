@@ -49,7 +49,7 @@ def sms(num):
             "address": "tel:" + num,
             "senderAddress": "tel:+221772262747",
             "outboundSMSTextMessage": {
-                "message": "Votre code de verification dans le compte LITA : Ecole d'été 2023 est :"+str(CODE)
+                "message": "Merci de recevoir, votre code de verification dans le compte LITA : Ecole d'été 2023 est :"+str(CODE)
             }
         }
     }
