@@ -17,4 +17,4 @@ EXPOSE 5000
 ENV NAME API4
 
 # Run app.py when the container launches
-CMD ["flask", "run"]
+CMD ["flask", "run", "--host=127.0.0.1"]
