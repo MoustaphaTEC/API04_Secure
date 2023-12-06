@@ -8,8 +8,7 @@ from app.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, \
     Disable2faForm
 from app.email import send_password_reset_email
 from datetime import datetime
-from app.twilio_verify_api import request_verification_token, \
-    check_verification_token, sms, check_verification_code, request_verification_code, code
+from app.twilio_verify_api import sms, check_verification_code, request_verification_code, code
 from flask_wtf.csrf import CSRFProtect
 
 T = None
@@ -201,7 +200,7 @@ def verify_2fa():
             if current_user.is_authenticated:
                 current_user.verification_phone = phone
                 db.session.commit()
-                flash("L'authentification à double facteur est maintenant activée")
+                flash("L'authentification à double facteur est maintenant activée", "success")
                 return redirect(
                     url_for('user', username=current_user.username)
                 )
@@ -226,7 +225,7 @@ def disable_2fa():
     if form.validate_on_submit():
         current_user.verification_phone = None
         db.session.commit()
-        flash("L'authentification à double facteur est maintenant désactivée")
+        flash("L'authentification à double facteur est maintenant désactivée", "success")
         return redirect(
             url_for('user', username=current_user.username)
         )

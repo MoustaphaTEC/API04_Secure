@@ -1,18 +1,6 @@
-from flask import flash
-from twilio.rest import Client, TwilioException
-from app import app
 import requests, random
 
 CODE = None
-
-
-def _get_twilio_verify_client():
-    return Client(
-        app.config['TWILIO_ACCOUNT_SID'],
-        app.config['TWILIO_AUTH_TOKEN']
-    ).verify.services(
-        app.config['TWILIO_VERIFY_SERVICE_ID']
-    )
 
 
 def get_oauth_token():
@@ -64,32 +52,18 @@ def code():
 
     return CODE
 
-def request_verification_token(phone):
-    verify = _get_twilio_verify_client()
+def request_verification_code(cd, toke):
     try:
-        verify.verifications.create(to=phone, channel='sms')
-    except TwilioException:
-        verify.verifications.create(to=phone, channel='call')
-
-
-def request_verification_code(cd, token):
-    try:
-        if token == cd:
-            flash('Verification reussie', 'success')
+        if str(toke) == str(cd):
+            flash('Verification réussie', 'success')
+            return True
         else:
-            flash('Code de verification Invalide''danger')
-    except TwilioException:
+            flash('Code de vérification invalide', 'danger')
+            return False
+    except Exception as e:
+        print(f"Error: {e}")
         return False
-    return 'approved'
 
-
-def check_verification_token(phone, token):
-    verify = _get_twilio_verify_client()
-    try:
-        result = verify.verification_checks.create(to=phone, code=token)
-    except TwilioException:
-        return False
-    return result.status == 'approved'
 
 
 from flask import flash
@@ -98,10 +72,10 @@ from flask import flash
 def check_verification_code(cd, toke):
     try:
         if str(toke) == str(cd):
-            flash('Verification réussie', 'success')
+            #flash('Verification réussie', 'success')
             return True
         else:
-            flash('Code de vérification invalide', 'danger')
+            #flash('Code de vérification invalide', 'danger')
             return False
     except Exception as e:
         print(f"Error: {e}")
