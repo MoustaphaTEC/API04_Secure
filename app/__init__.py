@@ -13,7 +13,7 @@ import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config['WTF_CSRF_ENABLED'] = False  # Disable CSRF protection globally
+app.config['WTF_CSRF_ENABLED'] = True  # Disable CSRF protection globally
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login'
