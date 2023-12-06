@@ -1,6 +1,6 @@
 FROM wernight/ngrok
 
-COPY ngrok.yml /home/parallels/.ngrok2/ngrok.yml
+COPY ngrok.yml /root/.ngrok2/ngrok.yml
 
-CMD ["ngrok", "start", "--config=/home/parallels/.ngrok2/ngrok.yml", "--all"]
+CMD ["ngrok", "start", "--config=/root/.ngrok2/ngrok.yml", "--all"]
 
