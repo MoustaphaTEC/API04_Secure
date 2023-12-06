@@ -14,7 +14,10 @@ RUN pip3.8 install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Define environment variable
-ENV NAME API4
+ENV FLASK_APP=twilio_verify.py
+ENV FLASK_ENV=development
+ENV FLASK_DEBUG=True
+ENV START_NGROK=1
 
 # Run app.py when the container launches
 CMD ["flask", "run", "--host=127.0.0.1"]
