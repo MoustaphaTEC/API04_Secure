@@ -17,7 +17,6 @@ EXPOSE 5000
 ENV FLASK_APP=twilio_verify.py
 ENV FLASK_ENV=development
 ENV FLASK_DEBUG=True
-ENV START_NGROK=1
 
 # Run app.py when the container launches
 CMD ["flask", "run", "--host=127.0.0.1"]
